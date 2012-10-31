@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 
 public class MainActivity extends Activity {
     private WagtailSqlHelper helper;
@@ -25,13 +24,7 @@ public class MainActivity extends Activity {
 
     private void updateList() {
         try {
-            SimpleCursorAdapter adapter = new SimpleCursorAdapter(
-                    this,
-                    R.layout.main_list,
-                    helper.getFileCursor(),
-                    new String[]{"path", "lastModified"},
-                    new int[]{R.id.path, R.id.lastModified},
-                    0);
+            MainListAdapter adapter = new MainListAdapter(this, helper.getFileCursor());
             ListView listView = (ListView)findViewById(R.id.main_list);
             listView.setAdapter(adapter);
         } catch (Exception e) {
