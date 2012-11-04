@@ -130,8 +130,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
                 "path=?",
                 new String[]{file.getAbsolutePath()},
                 null, null, null);
-        cursor.moveToFirst();
-        if (cursor.isAfterLast()) {
+        if (!cursor.moveToFirst()) {
             return null;
         }
         long id = cursor.getLong(cursor.getColumnIndex("_id"));
@@ -147,8 +146,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
                 "_id=?",
                 new String[]{"" + id},
                 null, null, null);
-        cursor.moveToFirst();
-        if (cursor.isAfterLast()) {
+        if (!cursor.moveToFirst()) {
             return null;
         }
         long revision = cursor.getLong(cursor.getColumnIndex("revision"));
