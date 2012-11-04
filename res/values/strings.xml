@@ -3,4 +3,6 @@
     <string name="menu_commit">Commit</string>
     <string name="title_activity_main">WagtailVC</string>
     <string name="title_file_chooser">File Chooser</string>
+    <string name="title_log_input">Commit Log</string>
+    <string name="ok">OK</string>
 </resources>

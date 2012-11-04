@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <EditText android:id="@+id/log"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:minLines="5"
+        android:inputType="textMultiLine|textImeMultiLine"/>
+    <Button android:id="@+id/log_ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/log"
+        android:layout_alignParentRight="true"
+        android:text="@string/ok"
+        android:onClick="onClick"/>
+</RelativeLayout>

@@ -1,40 +1,56 @@
 package org.jitu.wagtail;
 
-public class WagtailRevision {
-    private int id;
-    private int revision;
+import java.io.Serializable;
+
+public class WagtailRevision implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private long id;
+    private long revision;
     private long timestamp;
     private String log;
 
-    private int getId() {
+    public WagtailRevision(long id, String log) {
+        this.id = id;
+        this.log = log;
+    }
+
+    public WagtailRevision(long id, long revision, long timestamp, String log) {
+        this.id = id;
+        this.revision = revision;
+        this.timestamp = timestamp;
+        this.log = log;
+    }
+
+    public long getId() {
         return id;
     }
 
-    private void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    private int getRevision() {
+    public long getRevision() {
         return revision;
     }
 
-    private void setRevision(int revision) {
+    public void setRevision(long revision) {
         this.revision = revision;
     }
 
-    private long getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    private void setTimestamp(long timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
-    private String getLog() {
+    public String getLog() {
         return log;
     }
 
-    private void setLog(String log) {
+    public void setLog(String log) {
         this.log = log;
     }
 }

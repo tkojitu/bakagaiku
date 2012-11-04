@@ -1,15 +1,15 @@
 package org.jitu.wagtail;
 
 public class WagtailContent {
-    private int id;
+    private long id;
     private int revision;
     private String content;
 
-    private int getId() {
+    private long getId() {
         return id;
     }
 
-    private void setId(int id) {
+    private void setId(long id) {
         this.id = id;
     }
 

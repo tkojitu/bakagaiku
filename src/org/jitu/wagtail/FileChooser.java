@@ -14,6 +14,7 @@ import android.content.Intent;
 
 public class FileChooser extends ListActivity {
     public static final String ARG_ROOT = "ARG_ROOT";
+    public static final String RESULT_PATH = "path";
 
     private File currentDir;
     private FileArrayAdapter adapter;
@@ -61,12 +62,13 @@ public class FileChooser extends ListActivity {
     }
 
     private void onFileClick(File file) {
-        backToParent(file.getAbsolutePath());
+        backToParent(0, file.getAbsolutePath());
     }
     
-    private void backToParent(String path) {
-        Intent intent = new Intent(path);
-        setResult(0, intent);
+    private void backToParent(int resultCode, String path) {
+        Intent intent = new Intent();
+        intent.putExtra("path", path);
+        setResult(resultCode, intent);
         finish();
     }
 
@@ -81,7 +83,7 @@ public class FileChooser extends ListActivity {
     }
 
     private boolean cancel() {
-        backToParent("");
+        backToParent(-1, "");
         return true;
     }
 }
