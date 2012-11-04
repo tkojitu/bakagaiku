@@ -1,7 +1,6 @@
 package org.jitu.wagtail;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -25,7 +24,7 @@ public class WagtailVC {
 
     public void commitFile(WagtailFile nwf) {
         byte[] bytes = readFile(nwf);
-        nwf.setContentBytes(bytes);
+        nwf.setRevisionBytes(bytes);
         helper.saveFile(nwf);
     }
 

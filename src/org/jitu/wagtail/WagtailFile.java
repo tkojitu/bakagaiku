@@ -10,7 +10,6 @@ public class WagtailFile implements Serializable {
     private File file;
     private long lastModified = 0;
     private WagtailRevision revision;
-    private WagtailContent content;
 
     public WagtailFile(String path) {
         file = new File(path);
@@ -54,7 +53,35 @@ public class WagtailFile implements Serializable {
         this.revision = revision;
     }
 
-    public void setLog(String log) {
+    public long getRevisionNumber() {
+        if (revision == null) {
+            revision = new WagtailRevision(id, "");
+        }
+        return revision.getNumber();
+    }
+
+    public void setRevisionNumber(long n) {
+        if (revision == null) {
+            revision = new WagtailRevision(id, "");
+        }
+        revision.setNumber(n);
+    }
+
+    public long getRevisionTimestamp() {
+        if (revision == null) {
+            revision = new WagtailRevision(id, "");
+        }
+        return revision.getTimestamp();
+    }
+
+    public void setRevisionTimestamp(long timestamp) {
+        if (revision == null) {
+            revision = new WagtailRevision(id, "");
+        }
+        revision.setTimestamp(timestamp);
+    }
+
+    public void setRevisionLog(String log) {
         if (revision == null) {
             revision = new WagtailRevision(id, log);
         } else {
@@ -63,52 +90,24 @@ public class WagtailFile implements Serializable {
         }
     }
 
-    public String getLog() {
+    public String getRevisionLog() {
         if (revision == null) {
             revision = new WagtailRevision(id, "");
         }
         return revision.getLog();
     }
 
-    public long getTimestamp() {
+    public byte[] getRevisionBytes() {
         if (revision == null) {
             revision = new WagtailRevision(id, "");
         }
-        return revision.getTimestamp();
+        return revision.getBytes();
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setRevisionBytes(byte[] bytes) {
         if (revision == null) {
             revision = new WagtailRevision(id, "");
         }
-        revision.setTimestamp(timestamp);
-    }
-
-    public long getRevision() {
-        if (revision == null) {
-            revision = new WagtailRevision(id, "");
-        }
-        return revision.getRevision();
-    }
-
-    public void setRevision(long n) {
-        if (revision == null) {
-            revision = new WagtailRevision(id, "");
-        }
-        revision.setRevision(n);
-    }
-
-    public byte[] getContentBytes() {
-        if (content == null) {
-            content = new WagtailContent(null);
-        }
-        return content.getBytes();
-    }
-
-    public void setContentBytes(byte[] bytes) {
-        if (content == null) {
-            content = new WagtailContent(bytes);
-        }
-        content.setBytes(bytes);
+        revision.setBytes(bytes);
     }
 }

@@ -43,7 +43,7 @@ public class LogInput extends Activity {
     private void backToParent(int resultCode, String log) {
         Intent intent = getIntent();
         WagtailFile file = (WagtailFile)intent.getSerializableExtra(ARG_FILE);
-        file.setLog(log);
+        file.setRevisionLog(log);
         Intent newIntent = new Intent();
         newIntent.putExtra(RESULT_FILE, file);
         setResult(resultCode, newIntent);

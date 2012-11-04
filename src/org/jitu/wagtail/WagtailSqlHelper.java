@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 
 public class WagtailSqlHelper extends SQLiteOpenHelper {
     private static final String NAME = "wagtailvc.db";
@@ -159,7 +158,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
     private void insertFile(WagtailFile nwf) {
         long now = System.currentTimeMillis();
         nwf.setLastModified(now);
-        nwf.setTimestamp(now);
+        nwf.setRevisionTimestamp(now);
         insertFileToFiles(nwf);
         insertRevision(nwf);
         insertContent(nwf);
@@ -178,8 +177,8 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("_id", nwf.getId());
         values.put("revision", 1);
-        values.put("timestamp", nwf.getTimestamp());
-        values.put("log", nwf.getLog());
+        values.put("timestamp", nwf.getRevisionTimestamp());
+        values.put("log", nwf.getRevisionLog());
         SQLiteDatabase db = getWritableDatabase();
         db.insert("WagtailRevisions", null, values);
     }
@@ -188,8 +187,8 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         long now = System.currentTimeMillis();
         nwf.setId(found.getId());
         nwf.setLastModified(now);
-        nwf.setTimestamp(now);
-        nwf.setRevision(found.getRevision() + 1);
+        nwf.setRevisionTimestamp(now);
+        nwf.setRevisionNumber(found.getRevisionNumber() + 1);
         updateFileInFiles(nwf);
         insertRevision(nwf);
         insertContent(nwf);
@@ -205,20 +204,9 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
     private void insertContent(WagtailFile wf) {
         ContentValues values = new ContentValues();
         values.put("_id", wf.getId());
-        values.put("revision", wf.getRevision());
-        values.put("content", wf.getContentBytes());
+        values.put("revision", wf.getRevisionNumber());
+        values.put("content", wf.getRevisionBytes());
         SQLiteDatabase db = getWritableDatabase();
         db.insert("WagtailContents", null, values);
-/*
-        String sql = "insert into WagtailContents (_id, revision, content) VALUES(?, ?, ?)";
-        SQLiteDatabase db = getWritableDatabase();
-        SQLiteStatement insertStmt = db.compileStatement(sql);
-        insertStmt.clearBindings();
-        insertStmt.bindLong(1, wf.getId());
-        insertStmt.bindLong(2, wf.getRevision());
-        insertStmt.bindBlob(3, wf.getContentBytes());
-        insertStmt.executeInsert();
-        db.close();
-*/
     }
 }

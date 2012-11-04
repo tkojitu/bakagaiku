@@ -6,18 +6,19 @@ public class WagtailRevision implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private long id;
-    private long revision;
+    private long number;
     private long timestamp;
     private String log;
+    private byte[] bytes;
 
     public WagtailRevision(long id, String log) {
         this.id = id;
         this.log = log;
     }
 
-    public WagtailRevision(long id, long revision, long timestamp, String log) {
+    public WagtailRevision(long id, long number, long timestamp, String log) {
         this.id = id;
-        this.revision = revision;
+        this.number = number;
         this.timestamp = timestamp;
         this.log = log;
     }
@@ -30,12 +31,12 @@ public class WagtailRevision implements Serializable {
         this.id = id;
     }
 
-    public long getRevision() {
-        return revision;
+    public long getNumber() {
+        return number;
     }
 
-    public void setRevision(long revision) {
-        this.revision = revision;
+    public void setNumber(long revision) {
+        this.number = revision;
     }
 
     public long getTimestamp() {
@@ -52,5 +53,13 @@ public class WagtailRevision implements Serializable {
 
     public void setLog(String log) {
         this.log = log;
+    }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 }
