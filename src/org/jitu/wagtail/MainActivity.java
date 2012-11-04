@@ -14,19 +14,19 @@ public class MainActivity extends Activity {
     private final static int ACTIVITY_FILE_CHOOSER = 1;
     private final static int ACTIVITY_LOG_INPUT    = 2;
 
-    private WagtailSqlHelper helper;
+    private WagtailVC vc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        helper = new WagtailSqlHelper(this);
+        vc = new WagtailVC(this);
         updateList();
     }
 
     private void updateList() {
         try {
-            MainListAdapter adapter = new MainListAdapter(this, helper.getFileCursor());
+            MainListAdapter adapter = new MainListAdapter(this, vc.getFileCursor());
             ListView listView = (ListView)findViewById(R.id.main_list);
             listView.setAdapter(adapter);
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class MainActivity extends Activity {
     }
 
     private void commitFile(WagtailFile nwf) {
-        helper.saveFile(nwf);
+        vc.commitFile(nwf);
         updateList();
     }
 }
