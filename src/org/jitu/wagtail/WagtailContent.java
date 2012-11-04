@@ -1,31 +1,17 @@
 package org.jitu.wagtail;
 
 public class WagtailContent {
-    private long id;
-    private int revision;
-    private String content;
+    private byte[] bytes;
 
-    private long getId() {
-        return id;
+    public WagtailContent(byte[] bytes) {
+        this.bytes = bytes;
     }
 
-    private void setId(long id) {
-        this.id = id;
+    public void setBytes(byte[] bytes) {
+        this.bytes = bytes;
     }
 
-    private int getRevision() {
-        return revision;
-    }
-
-    private void setRevision(int revision) {
-        this.revision = revision;
-    }
-
-    private String getContent() {
-        return content;
-    }
-
-    private void setContent(String content) {
-        this.content = content;
+    public byte[] getBytes() {
+        return bytes;
     }
 }

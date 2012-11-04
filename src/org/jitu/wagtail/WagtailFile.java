@@ -10,6 +10,7 @@ public class WagtailFile implements Serializable {
     private File file;
     private long lastModified = 0;
     private WagtailRevision revision;
+    private WagtailContent content;
 
     public WagtailFile(String path) {
         file = new File(path);
@@ -95,5 +96,19 @@ public class WagtailFile implements Serializable {
             revision = new WagtailRevision(id, "");
         }
         revision.setRevision(n);
+    }
+
+    public byte[] getContentBytes() {
+        if (content == null) {
+            content = new WagtailContent(null);
+        }
+        return content.getBytes();
+    }
+
+    public void setContentBytes(byte[] bytes) {
+        if (content == null) {
+            content = new WagtailContent(bytes);
+        }
+        content.setBytes(bytes);
     }
 }
