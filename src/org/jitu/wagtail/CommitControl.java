@@ -11,10 +11,10 @@ import org.apache.http.util.ByteArrayBuffer;
 import android.content.Context;
 import android.database.Cursor;
 
-public class WagtailVC {
+public class CommitControl {
     private WagtailSqlHelper helper;
 
-    public WagtailVC(Context context) {
+    public CommitControl(Context context) {
         helper = new WagtailSqlHelper(context);
     }
 

@@ -7,27 +7,41 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnItemClickListener {
     private final static int ACTIVITY_FILE_CHOOSER = 1;
     private final static int ACTIVITY_LOG_INPUT    = 2;
 
-    private WagtailVC vc;
+    private CommitControl vc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        vc = new WagtailVC(this);
+        setupListView();
+        vc = new CommitControl(this);
         updateList();
+    }
+
+    private void setupListView() {
+        ListView listView = getListView(); 
+        listView.setOnItemClickListener(this);
+    }
+
+    private ListView getListView() {
+        return (ListView)findViewById(R.id.main_list);
     }
 
     private void updateList() {
         try {
             MainListAdapter adapter = new MainListAdapter(this, vc.getFileCursor());
-            ListView listView = (ListView)findViewById(R.id.main_list);
+            ListView listView = getListView();
             listView.setAdapter(adapter);
         } catch (Exception e) {
             Log.e("MainActivity", e.getMessage());
@@ -97,5 +111,11 @@ public class MainActivity extends Activity {
     private void commitFile(WagtailFile nwf) {
         vc.commitFile(nwf);
         updateList();
+    }
+
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TextView text = (TextView)view.findViewById(R.id.path);
+        String item = text.getText().toString();
+        Toast.makeText(this, item, Toast.LENGTH_LONG).show();
     }
 }
