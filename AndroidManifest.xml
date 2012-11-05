@@ -34,6 +34,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="org.jitu.wagtail.MainActivity" />
         </activity>
-        </application>
+        <activity
+            android:name=".RevisionActivity"
+            android:label="@string/title_revision" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.jitu.wagtail.MainActivity" />
+        </activity>
+    </application>
 
 </manifest>

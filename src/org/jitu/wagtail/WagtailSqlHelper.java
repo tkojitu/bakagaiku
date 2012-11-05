@@ -209,4 +209,18 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.insert("WagtailContents", null, values);
     }
+
+    public long findId(String path) {
+        WagtailFile wf = findByFileFromFiles(new File(path));
+        return wf.getId();
+    }
+
+    public Cursor getRevisionCursor(long id) {
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query("WagtailRevisions",
+                new String[]{"_id", "revision", "timestamp", "log"},
+                "_id=?",
+                new String[]{"" + id},
+                null, null, null);
+    }
 }

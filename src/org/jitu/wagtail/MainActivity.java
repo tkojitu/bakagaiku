@@ -17,15 +17,16 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity implements OnItemClickListener {
     private final static int ACTIVITY_FILE_CHOOSER = 1;
     private final static int ACTIVITY_LOG_INPUT    = 2;
+    private final static int ACTIVITY_REVISION     = 3;
 
-    private CommitControl vc;
+    private CommitControl control;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupListView();
-        vc = new CommitControl(this);
+        control = new CommitControl(this);
         updateList();
     }
 
@@ -40,7 +41,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
     private void updateList() {
         try {
-            MainListAdapter adapter = new MainListAdapter(this, vc.getFileCursor());
+            MainListAdapter adapter = new MainListAdapter(this, control.getFileCursor());
             ListView listView = getListView();
             listView.setAdapter(adapter);
         } catch (Exception e) {
@@ -84,6 +85,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
         case ACTIVITY_LOG_INPUT:
             onLogInputResult(data);
             break;
+        case ACTIVITY_REVISION:
+            break;
         }
     }
 
@@ -109,13 +112,21 @@ public class MainActivity extends Activity implements OnItemClickListener {
     }
 
     private void commitFile(WagtailFile nwf) {
-        vc.commitFile(nwf);
+        control.commitFile(nwf);
         updateList();
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TextView text = (TextView)view.findViewById(R.id.path);
-        String item = text.getText().toString();
-        Toast.makeText(this, item, Toast.LENGTH_LONG).show();
+        String path = text.getText().toString();
+        openRevision(path);
+    }
+
+    private void openRevision(String path) {
+        long fileId = control.findId(path);
+        Intent intent = new Intent(this, RevisionActivity.class);
+        intent.putExtra(RevisionActivity.ARG_ID, fileId);
+        intent.putExtra(RevisionActivity.ARG_FILE, path);
+        startActivityForResult(intent, ACTIVITY_REVISION);
     }
 }

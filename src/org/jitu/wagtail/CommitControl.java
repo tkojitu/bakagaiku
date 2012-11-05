@@ -45,4 +45,8 @@ public class CommitControl {
             return null;
         }
     }
+
+    public long findId(String path) {
+        return helper.findId(path);
+    }
 }
