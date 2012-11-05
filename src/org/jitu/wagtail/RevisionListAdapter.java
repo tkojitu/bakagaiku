@@ -19,16 +19,22 @@ public class RevisionListAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         fillRevisionNumber(view, cursor);
+        fillRevisionTimestamp(view, cursor);
         fillRevisionLog(view, cursor);
     }
 
     private void fillRevisionNumber(View view, Cursor cursor) {
         TextView textView = (TextView)view.findViewById(R.id.revision_number);
         long number = cursor.getLong(cursor.getColumnIndex("revision"));
+        textView.setText("" + number);
+    }
+
+    private void fillRevisionTimestamp(View view, Cursor cursor) {
+        TextView textView = (TextView)view.findViewById(R.id.revision_timestamp);
         long time = cursor.getLong(cursor.getColumnIndex("timestamp"));
         Date date = new Date(time);
         SimpleDateFormat format = new SimpleDateFormat();
-        textView.setText("" + number + " " + format.format(date));
+        textView.setText(format.format(date));
     }
 
     private void fillRevisionLog(View view, Cursor cursor) {

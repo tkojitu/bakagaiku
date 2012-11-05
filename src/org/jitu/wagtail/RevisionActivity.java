@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class RevisionActivity extends ListActivity {
     public static final String ARG_ID = "ARG_ID";
@@ -28,6 +32,13 @@ public class RevisionActivity extends ListActivity {
         Cursor cursor = control.getRevisionCursor(id);
         RevisionListAdapter adapter = new RevisionListAdapter(this, cursor);
         setListAdapter(adapter);
+    }
+
+    @Override
+    protected void onListItemClick(ListView listView, View view, int position, long id) {
+        TextView textView = (TextView)view.findViewById(R.id.revision_number);
+        String number = textView.getText().toString();
+        Toast.makeText(this, "" + number, Toast.LENGTH_SHORT).show();
     }
 
     private void backToParent(int resultCode) {
