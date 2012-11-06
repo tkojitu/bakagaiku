@@ -11,6 +11,12 @@ public class WagtailFile implements Serializable {
     private long lastModified = 0;
     private WagtailRevision revision;
 
+    public static WagtailFile newToCheckOut(long id, String path, long revisionNumber) {
+        WagtailFile wf = new WagtailFile(id, path, 0);
+        wf.setRevisionNumber(revisionNumber);
+        return wf;
+    }
+
     public WagtailFile(String path) {
         file = new File(path);
     }

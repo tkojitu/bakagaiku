@@ -16,6 +16,11 @@ public class WagtailRevision implements Serializable {
         this.log = log;
     }
 
+    public WagtailRevision(long id, long number) {
+        this.id = id;
+        this.number = number;
+    }
+
     public WagtailRevision(long id, long number, long timestamp, String log) {
         this.id = id;
         this.number = number;
@@ -35,8 +40,8 @@ public class WagtailRevision implements Serializable {
         return number;
     }
 
-    public void setNumber(long revision) {
-        this.number = revision;
+    public void setNumber(long number) {
+        this.number = number;
     }
 
     public long getTimestamp() {

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class RevisionActivity extends ListActivity {
     public static final String ARG_ID = "ARG_ID";
@@ -37,8 +36,12 @@ public class RevisionActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView listView, View view, int position, long id) {
         TextView textView = (TextView)view.findViewById(R.id.revision_number);
-        String number = textView.getText().toString();
-        Toast.makeText(this, "" + number, Toast.LENGTH_SHORT).show();
+        long number = Long.parseLong(textView.getText().toString());
+        long fileId = getIntent().getLongExtra(ARG_ID, -1);
+        String path = getIntent().getStringExtra(ARG_FILE);
+        WagtailFile wf = WagtailFile.newToCheckOut(fileId, path, number);
+        control.checkOut(wf);
+        finish();
     }
 
     private void backToParent(int resultCode) {

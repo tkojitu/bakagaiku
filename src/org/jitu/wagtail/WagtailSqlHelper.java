@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class WagtailSqlHelper extends SQLiteOpenHelper {
     private static final String NAME = "wagtailvc.db";
@@ -25,21 +26,20 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
 
     private void createWagtailContents(SQLiteDatabase db) {
         String sql = "create table WagtailContents (" +
-                "_id integer, " +
-                "revision integer, " +
-                "content blob, " +
-                "foreign key (_id) references WagtailFiles(_id), " +
-                "foreign key (revision) references WagtailRevisions(revision)" +
+                "_id integer," +
+                "revision integer," +
+                "content blob," +
+                "foreign key (_id) references WagtailFiles(_id)" +
                 ")";
         db.execSQL(sql);
     }
 
     private void createWagtailRevisions(SQLiteDatabase db) {
         String sql = "create table WagtailRevisions (" +
-                "_id integer, " +
-                "revision integer, " +
-                "timestamp integer, " +
-                "log text, " +
+                "_id integer," +
+                "revision integer," +
+                "timestamp integer," +
+                "log text," +
                 "foreign key (_id) references WagtailFiles(_id)" +
                 ")";
         db.execSQL(sql);
@@ -47,7 +47,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
 
     private void createWagtailFiles(SQLiteDatabase db) {
         String sql = "create table WagtailFiles (" +
-                "_id integer primary key autoincrement, " +
+                "_id integer primary key autoincrement," +
                 "path text not null," +
                 "lastModified integer not null" +
                 ")";
@@ -169,18 +169,18 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         values.put("path", nwf.getAbsolutePath());
         values.put("lastModified", nwf.getLastModified());
         SQLiteDatabase db = getWritableDatabase();
-        long id = db.insert("WagtailFiles", null, values);
+        long id = db.insertOrThrow("WagtailFiles", null, values);
         nwf.setId(id);
     }
 
     private void insertRevision(WagtailFile nwf) {
         ContentValues values = new ContentValues();
         values.put("_id", nwf.getId());
-        values.put("revision", 1);
+        values.put("revision", nwf.getRevisionNumber());
         values.put("timestamp", nwf.getRevisionTimestamp());
         values.put("log", nwf.getRevisionLog());
         SQLiteDatabase db = getWritableDatabase();
-        db.insert("WagtailRevisions", null, values);
+        db.insertOrThrow("WagtailRevisions", null, values);
     }
 
     private void updateFile(WagtailFile found, WagtailFile nwf) {
@@ -207,7 +207,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         values.put("revision", wf.getRevisionNumber());
         values.put("content", wf.getRevisionBytes());
         SQLiteDatabase db = getWritableDatabase();
-        db.insert("WagtailContents", null, values);
+        db.insertOrThrow("WagtailContents", null, values);
     }
 
     public long findId(String path) {
@@ -222,5 +222,19 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
                 "_id=?",
                 new String[]{"" + id},
                 null, null, null);
+    }
+
+    public void findContent(WagtailFile wf) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query("WagtailContents",
+                new String[]{"_id", "revision", "content"},
+                "_id=? and revision=?",
+                new String[]{"" + wf.getId(), "" + wf.getRevisionNumber()},
+                null, null, null);
+        if (!cursor.moveToFirst()) {
+            return;
+        }
+        byte[] content = cursor.getBlob(cursor.getColumnIndex("content"));
+        wf.setRevisionBytes(content);
     }
 }
