@@ -9,11 +9,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class WagtailSqlHelper extends SQLiteOpenHelper {
-    private static final String NAME = "wagtailvc.db";
+    private static final String DBNAME = "wagtailvc.db";
     private static final int VERSION = 1;
 
     public WagtailSqlHelper(Context context) {
-        super(context, NAME, null, VERSION);
+        super(context, DBNAME, null, VERSION);
     }
 
     @Override
@@ -155,6 +155,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
     }
 
     private void insertFile(WagtailFile nwf) {
+        nwf.setRevisionNumber(0);
         long now = System.currentTimeMillis();
         nwf.setLastModified(now);
         nwf.setRevisionTimestamp(now);

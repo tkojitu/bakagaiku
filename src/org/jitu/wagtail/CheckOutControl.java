@@ -28,7 +28,7 @@ public class CheckOutControl {
     private void saveFile(WagtailFile wf) {
         File file = wf.getFile();
         long number = wf.getRevisionNumber();
-        String path = file.getAbsolutePath() + number;
+        String path = file.getAbsolutePath() + "." + number;
         try {
             FileOutputStream fos = new FileOutputStream(path);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
