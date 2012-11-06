@@ -98,7 +98,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     }
 
     private boolean openLogInput(String path) {
-        WagtailFile nwf = new WagtailFile(path);
+        WagtailFile nwf = WagtailFile.newWithPath(path);
         Intent intent = new Intent(this, LogInput.class);
         intent.putExtra(LogInput.ARG_FILE, nwf);
         startActivityForResult(intent, ACTIVITY_LOG_INPUT);

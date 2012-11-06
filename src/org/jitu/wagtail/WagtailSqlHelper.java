@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class WagtailSqlHelper extends SQLiteOpenHelper {
     private static final String NAME = "wagtailvc.db";
@@ -152,7 +151,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         long revision = cursor.getLong(cursor.getColumnIndex("revision"));
         long timestamp = cursor.getLong(cursor.getColumnIndex("timestamp"));
         String log = cursor.getString(cursor.getColumnIndex("log"));
-        return new WagtailRevision(id, revision, timestamp, log);
+        return new WagtailRevision(revision, timestamp, log);
     }
 
     private void insertFile(WagtailFile nwf) {

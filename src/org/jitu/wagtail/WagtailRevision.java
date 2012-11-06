@@ -5,35 +5,18 @@ import java.io.Serializable;
 public class WagtailRevision implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private long id;
-    private long number;
+    private long number = -1;
     private long timestamp;
     private String log;
     private byte[] bytes;
 
-    public WagtailRevision(long id, String log) {
-        this.id = id;
-        this.log = log;
+    public WagtailRevision() {
     }
 
-    public WagtailRevision(long id, long number) {
-        this.id = id;
-        this.number = number;
-    }
-
-    public WagtailRevision(long id, long number, long timestamp, String log) {
-        this.id = id;
+    public WagtailRevision(long number, long timestamp, String log) {
         this.number = number;
         this.timestamp = timestamp;
         this.log = log;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public long getNumber() {
