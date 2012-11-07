@@ -16,6 +16,7 @@ public class FileChooser extends ListActivity {
     public static final String ARG_ROOT = "ARG_ROOT";
     public static final String RESULT_PATH = "path";
 
+    private File root;
     private File currentDir;
     private FileArrayAdapter adapter;
 
@@ -24,9 +25,10 @@ public class FileChooser extends ListActivity {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        String root = intent.getStringExtra(ARG_ROOT);
-        currentDir = new File(root);
+        String path = intent.getStringExtra(ARG_ROOT);
+        root = currentDir = new File(path);
         fill(currentDir);
+        setTitle(currentDir.getName());
     }
 
     private void fill(File root) {
@@ -85,5 +87,20 @@ public class FileChooser extends ListActivity {
     private boolean cancel() {
         backToParent(-1, "");
         return true;
+    }
+
+    @Override
+    public void onBackPressed () {
+        if (currentDir.equals(root)) {
+            cancel();
+            return;
+        }
+        moveUp();
+    }
+
+    private void moveUp() {
+        currentDir = currentDir.getParentFile();
+        fill(currentDir);
+        setTitle(currentDir.getName());
     }
 }
