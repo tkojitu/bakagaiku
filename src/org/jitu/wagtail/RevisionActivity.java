@@ -63,4 +63,9 @@ public class RevisionActivity extends ListActivity {
         backToParent(-1);
         return true;
     }
+
+    @Override
+    public void onBackPressed () {
+        cancel();
+    }
 }

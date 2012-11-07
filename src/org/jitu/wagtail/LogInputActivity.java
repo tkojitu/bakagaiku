@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-public class LogInput extends Activity {
+public class LogInputActivity extends Activity {
     public final static String ARG_FILE = "ARG_FILE";
     public final static String RESULT_FILE = "RESULT_FILE";
 
@@ -54,5 +54,10 @@ public class LogInput extends Activity {
         EditText edit = (EditText)findViewById(R.id.log);
         String str = edit.getText().toString();
         backToParent(0, str);
+    }
+
+    @Override
+    public void onBackPressed () {
+        cancel();
     }
 }

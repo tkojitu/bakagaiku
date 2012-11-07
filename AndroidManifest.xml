@@ -30,7 +30,7 @@
                 android:value="org.jitu.wagtail.MainActivity" />
         </activity>
         <activity
-            android:name=".LogInput"
+            android:name=".LogInputActivity"
             android:label="@string/title_log_input" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

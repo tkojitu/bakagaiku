@@ -99,14 +99,14 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
     private boolean openLogInput(String path) {
         WagtailFile nwf = WagtailFile.newWithPath(path);
-        Intent intent = new Intent(this, LogInput.class);
-        intent.putExtra(LogInput.ARG_FILE, nwf);
+        Intent intent = new Intent(this, LogInputActivity.class);
+        intent.putExtra(LogInputActivity.ARG_FILE, nwf);
         startActivityForResult(intent, ACTIVITY_LOG_INPUT);
         return true;
     }
 
     private void onLogInputResult(Intent data) {
-        WagtailFile nwf = (WagtailFile)data.getSerializableExtra(LogInput.RESULT_FILE);
+        WagtailFile nwf = (WagtailFile)data.getSerializableExtra(LogInputActivity.RESULT_FILE);
         commitFile(nwf);
     }
 
