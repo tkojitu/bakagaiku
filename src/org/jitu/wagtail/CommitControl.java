@@ -10,22 +10,38 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.widget.Toast;
 
 public class CommitControl {
+    private Context context;
     private WagtailSqlHelper helper;
 
     public CommitControl(Context context) {
+        this.context = context;
         helper = new WagtailSqlHelper(context);
     }
 
     public Cursor getFileCursor() {
-        return helper.getFileCursor();
+        try {
+            return helper.getFileCursor();
+        } catch (SQLException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            return null;
+        }
     }
 
     public void commitFile(WagtailFile nwf) {
         byte[] bytes = readFile(nwf);
+        if (bytes == null) {
+            return;
+        }
         nwf.setRevisionBytes(bytes);
-        helper.saveFile(nwf);
+        try {
+            helper.saveFile(nwf);
+        } catch (SQLException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private byte[] readFile(WagtailFile nwf) {
@@ -42,11 +58,17 @@ public class CommitControl {
             }
             return buf.toByteArray();
         } catch (IOException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
             return null;
         }
     }
 
     public long findId(String path) {
-        return helper.findId(path);
+        try {
+            return helper.findId(path);
+        } catch (SQLException e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+            return -1;
+        }
     }
 }

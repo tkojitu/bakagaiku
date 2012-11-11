@@ -52,6 +52,10 @@ public class RevisionActivity extends ListActivity {
         newFragment.show(getFragmentManager(), "dialog");
     }
 
+    public void checkOut(String path) {
+        control.checkOut(checkOuted, path);
+    }
+
     private void backToParent(int resultCode) {
         setResult(resultCode);
         finish();
@@ -75,9 +79,5 @@ public class RevisionActivity extends ListActivity {
     @Override
     public void onBackPressed () {
         cancel();
-    }
-
-    public void checkOut(String path) {
-        control.checkOut(checkOuted, path);
     }
 }

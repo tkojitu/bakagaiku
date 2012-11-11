@@ -123,6 +123,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
     private void openRevision(String path) {
         long fileId = control.findId(path);
+        if (fileId == -1) {
+            return;
+        }
         Intent intent = new Intent(this, RevisionActivity.class);
         intent.putExtra(RevisionActivity.ARG_ID, fileId);
         intent.putExtra(RevisionActivity.ARG_FILE, path);

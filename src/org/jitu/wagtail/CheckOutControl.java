@@ -7,12 +7,14 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
+import android.widget.Toast;
 
 public class CheckOutControl {
+    private Context context;
     private WagtailSqlHelper helper;
 
     public CheckOutControl(Context context) {
+        this.context = context;
         helper = new WagtailSqlHelper(context);
     }
 
@@ -38,7 +40,7 @@ public class CheckOutControl {
             bos.write(wf.getRevisionBytes());
             bos.close();
         } catch (IOException e) {
-            Log.e("CheckOutControl", e.getMessage());
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }
