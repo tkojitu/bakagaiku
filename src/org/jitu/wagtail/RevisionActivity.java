@@ -1,5 +1,6 @@
 package org.jitu.wagtail;
 
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -14,6 +15,7 @@ public class RevisionActivity extends ListActivity {
     public static final String ARG_FILE = "ARG_FILE";
 
     private CheckOutControl control;
+    private WagtailFile checkOuted;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +42,14 @@ public class RevisionActivity extends ListActivity {
         long fileId = getIntent().getLongExtra(ARG_ID, -1);
         String path = getIntent().getStringExtra(ARG_FILE);
         WagtailFile wf = WagtailFile.newToCheckOut(fileId, path, number);
-        control.checkOut(wf);
-        finish();
+        showCheckOutDialog(wf);
+    }
+
+    private void showCheckOutDialog(WagtailFile wf) {
+        checkOuted = wf;
+        String path = control.getCheckOutPath(wf);
+        DialogFragment newFragment = CheckOutFragment.newInstance(path);
+        newFragment.show(getFragmentManager(), "dialog");
     }
 
     private void backToParent(int resultCode) {
@@ -59,7 +67,7 @@ public class RevisionActivity extends ListActivity {
         }
     }
 
-    private boolean cancel() {
+    public boolean cancel() {
         backToParent(-1);
         return true;
     }
@@ -67,5 +75,9 @@ public class RevisionActivity extends ListActivity {
     @Override
     public void onBackPressed () {
         cancel();
+    }
+
+    public void checkOut(String path) {
+        control.checkOut(checkOuted, path);
     }
 }

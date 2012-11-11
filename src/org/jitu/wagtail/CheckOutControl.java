@@ -20,17 +20,20 @@ public class CheckOutControl {
         return helper.getRevisionCursor(id);
     }
 
-    public void checkOut(WagtailFile wf) {
-        helper.findContent(wf);
-        saveFile(wf);
-    }
-
-    private void saveFile(WagtailFile wf) {
+    public String getCheckOutPath(WagtailFile wf) {
         File file = wf.getFile();
         long number = wf.getRevisionNumber();
-        String path = file.getAbsolutePath() + "." + number;
+        return file.getAbsolutePath() + "." + number;
+    }
+
+    public void checkOut(WagtailFile wf, String path) {
+        helper.findContent(wf);
+        saveFile(wf, new File(path));
+    }
+
+    private void saveFile(WagtailFile wf, File file) {
         try {
-            FileOutputStream fos = new FileOutputStream(path);
+            FileOutputStream fos = new FileOutputStream(file);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
             bos.write(wf.getRevisionBytes());
             bos.close();

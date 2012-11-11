@@ -6,4 +6,6 @@
     <string name="title_log_input">Commit Log</string>
     <string name="title_revision"></string>
     <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="check_out">Check Out</string>
 </resources>
