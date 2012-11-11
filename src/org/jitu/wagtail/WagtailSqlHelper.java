@@ -113,17 +113,17 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
     }
 
     private WagtailFile findLatestFile(File file) {
-        WagtailFile result = findByFileFromFiles(file);
+        SQLiteDatabase db = getReadableDatabase();
+        WagtailFile result = findByFileFromFiles(db, file);
         if (result == null) {
             return null;
         }
-        WagtailRevision rev = findLatestRevision(result.getId());
+        WagtailRevision rev = findLatestRevision(db, result.getId());
         result.setRevision(rev);
         return result;
     }
 
-    private WagtailFile findByFileFromFiles(File file) {
-        SQLiteDatabase db = getReadableDatabase();
+    private WagtailFile findByFileFromFiles(SQLiteDatabase db, File file) {
         Cursor cursor = db.query("WagtailFiles",
                 new String[]{"_id", "path", "lastModified"},
                 "path=?",
@@ -138,8 +138,7 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         return new WagtailFile(id, path, lastModified);
     }
 
-    private WagtailRevision findLatestRevision(long id) {
-        SQLiteDatabase db = getReadableDatabase();
+    private WagtailRevision findLatestRevision(SQLiteDatabase db, long id) {
         Cursor cursor = db.query("WagtailRevisions",
                 new String[]{"_id", "max(revision) as revision", "timestamp", "log"},
                 "_id=?",
@@ -159,28 +158,41 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         long now = System.currentTimeMillis();
         nwf.setLastModified(now);
         nwf.setRevisionTimestamp(now);
-        insertFileToFiles(nwf);
-        insertRevision(nwf);
-        insertContent(nwf);
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            insertFileToFiles(db, nwf);
+            insertRevision(db, nwf);
+            insertContent(db, nwf);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
-    private void insertFileToFiles(WagtailFile nwf) {
+    private void insertFileToFiles(SQLiteDatabase db, WagtailFile nwf) {
         ContentValues values = new ContentValues();
         values.put("path", nwf.getAbsolutePath());
         values.put("lastModified", nwf.getLastModified());
-        SQLiteDatabase db = getWritableDatabase();
         long id = db.insertOrThrow("WagtailFiles", null, values);
         nwf.setId(id);
     }
 
-    private void insertRevision(WagtailFile nwf) {
+    private void insertRevision(SQLiteDatabase db, WagtailFile nwf) {
         ContentValues values = new ContentValues();
         values.put("_id", nwf.getId());
         values.put("revision", nwf.getRevisionNumber());
         values.put("timestamp", nwf.getRevisionTimestamp());
         values.put("log", nwf.getRevisionLog());
-        SQLiteDatabase db = getWritableDatabase();
         db.insertOrThrow("WagtailRevisions", null, values);
+    }
+
+    private void insertContent(SQLiteDatabase db, WagtailFile wf) {
+        ContentValues values = new ContentValues();
+        values.put("_id", wf.getId());
+        values.put("revision", wf.getRevisionNumber());
+        values.put("content", wf.getRevisionBytes());
+        db.insertOrThrow("WagtailContents", null, values);
     }
 
     private void updateFile(WagtailFile found, WagtailFile nwf) {
@@ -189,29 +201,27 @@ public class WagtailSqlHelper extends SQLiteOpenHelper {
         nwf.setLastModified(now);
         nwf.setRevisionTimestamp(now);
         nwf.setRevisionNumber(found.getRevisionNumber() + 1);
-        updateFileInFiles(nwf);
-        insertRevision(nwf);
-        insertContent(nwf);
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            updateFileInFiles(db, nwf);
+            insertRevision(db, nwf);
+            insertContent(db, nwf);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
-    private void updateFileInFiles(WagtailFile wf) {
+    private void updateFileInFiles(SQLiteDatabase db, WagtailFile wf) {
         ContentValues values = new ContentValues();
         values.put("lastModified", wf.getLastModified());
-        SQLiteDatabase db = getWritableDatabase();
         db.update("WagtailFiles", values, "_id like " + wf.getId(), null);
     }
 
-    private void insertContent(WagtailFile wf) {
-        ContentValues values = new ContentValues();
-        values.put("_id", wf.getId());
-        values.put("revision", wf.getRevisionNumber());
-        values.put("content", wf.getRevisionBytes());
-        SQLiteDatabase db = getWritableDatabase();
-        db.insertOrThrow("WagtailContents", null, values);
-    }
-
     public long findId(String path) {
-        WagtailFile wf = findByFileFromFiles(new File(path));
+        SQLiteDatabase db = getReadableDatabase();
+        WagtailFile wf = findByFileFromFiles(db, new File(path));
         return wf.getId();
     }
 
