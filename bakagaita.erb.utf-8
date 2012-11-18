@@ -1,0 +1,19 @@
+<%#-*- coding: utf-8 -*-%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+          "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="ja">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-script-type" content="text/javascript">
+<link rev="made" href="mailto:tko@jitu.org">
+<title>バカが征く</title>
+</head>
+<body>
+<pre>
+<%= article.prehtml %>
+</pre>
+<p><a href="<%= permlink %>">Permlink</a></p>
+<hr>
+<p>Copyright &copy; 1905 tko at jitu.org</a></p>
+</body>
+</html>

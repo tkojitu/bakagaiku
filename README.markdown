@@ -1,0 +1,4 @@
+bakagaiku.rb
+============
+
+FYI.
