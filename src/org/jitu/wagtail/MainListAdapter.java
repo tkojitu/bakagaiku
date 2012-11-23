@@ -1,14 +1,15 @@
 package org.jitu.wagtail;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 public class MainListAdapter extends CursorAdapter {
@@ -16,6 +17,7 @@ public class MainListAdapter extends CursorAdapter {
         super(context, cursor, 0);
     }
 
+    @Override
     public void bindView(View view, Context context, Cursor cursor) {
         setPath(view, cursor);
         setLastModified(view, cursor);
@@ -27,10 +29,10 @@ public class MainListAdapter extends CursorAdapter {
     }
     
     private void setLastModified(View view, Cursor cursor) {
-        TextView lastModified = (TextView)view.findViewById(R.id.lastModified);
+        TextView lastModified = (TextView)view.findViewById(R.id.last_modified);
         long time = cursor.getLong(cursor.getColumnIndex("lastModified"));
         Date date = new Date(time);
-        SimpleDateFormat format = new SimpleDateFormat();
+        DateFormat format = SimpleDateFormat.getDateTimeInstance();
         lastModified.setText(format.format(date));
     }
 

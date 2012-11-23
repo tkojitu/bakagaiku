@@ -1,10 +1,6 @@
 package org.jitu.wagtail;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,17 +27,8 @@ public class FileChooser extends ListActivity {
         setTitle(currentDir.getName());
     }
 
-    private void fill(File root) {
-        List<File> files = new ArrayList<File>();
-        File[] array = root.listFiles();
-        for (File file: array) {
-            files.add(file);
-        }
-        Collections.sort(files);
-        if (!root.getName().equalsIgnoreCase("sdcard")) {
-            files.add(0, root.getParentFile());
-        }
-        adapter = new FileArrayAdapter(FileChooser.this, R.layout.file_chooser, files);
+    private void fill(File dir) {
+        adapter = FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser, dir);
         setListAdapter(adapter);
     }
 
