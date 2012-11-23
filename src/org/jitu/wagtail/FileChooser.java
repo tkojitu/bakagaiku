@@ -20,16 +20,24 @@ public class FileChooser extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        setupList();
+        setTitleDir();
+    }
+
+    private void setupList() {
         Intent intent = getIntent();
         String path = intent.getStringExtra(ARG_ROOT);
         root = currentDir = new File(path);
         fill(currentDir);
-        setTitle(currentDir.getName());
     }
 
     private void fill(File dir) {
         adapter = FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser, dir);
         setListAdapter(adapter);
+    }
+
+    private void setTitleDir() {
+        setTitle(currentDir.getName());
     }
 
     @Override
@@ -47,7 +55,7 @@ public class FileChooser extends ListActivity {
         } catch (Exception e) {
             currentDir = save;
         }
-        setTitle(currentDir.getName());
+        setTitleDir();
     }
 
     private void onFileClick(File file) {
@@ -88,6 +96,6 @@ public class FileChooser extends ListActivity {
     private void moveUp() {
         currentDir = currentDir.getParentFile();
         fill(currentDir);
-        setTitle(currentDir.getName());
+        setTitleDir();
     }
 }
