@@ -4,11 +4,13 @@ import java.io.File;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.app.ListActivity;
+import android.widget.AdapterView.OnItemClickListener;
+import android.app.Activity;
 import android.content.Intent;
 
-public class FileChooser extends ListActivity {
+public class FileChooser extends Activity implements OnItemClickListener {
     public static final String ARG_ROOT = "ARG_ROOT";
     public static final String RESULT_PATH = "path";
 
@@ -20,6 +22,7 @@ public class FileChooser extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.file_chooser);
         setupList();
         setTitleDir();
     }
@@ -28,27 +31,27 @@ public class FileChooser extends ListActivity {
         Intent intent = getIntent();
         String path = intent.getStringExtra(ARG_ROOT);
         root = currentDir = new File(path);
-        fill(currentDir);
+        setupList(currentDir);
     }
 
-    private void fill(File dir) {
-        adapter = FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser, dir);
-        setListAdapter(adapter);
+    private void setupList(File dir) {
+        ListView lv = (ListView)findViewById(R.id.file_chooser_list);
+        lv.setOnItemClickListener(this);
+        adapter = FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser_list, dir);
+        lv.setAdapter(adapter);
     }
 
     private void setTitleDir() {
         setTitle(currentDir.getName());
     }
 
-    @Override
-    protected void onListItemClick(ListView listView, View view, int position, long id) {
-        super.onListItemClick(listView, view, position, id);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         File save = currentDir;
         try {
             File file = adapter.getFile(position);
             if (file.isDirectory()) {
                 currentDir = file.getAbsoluteFile();
-                fill(currentDir);
+                setupList(currentDir);
             } else {
                 onFileClick(file);
             }
@@ -95,7 +98,7 @@ public class FileChooser extends ListActivity {
 
     private void moveUp() {
         currentDir = currentDir.getParentFile();
-        fill(currentDir);
+        setupList(currentDir);
         setTitleDir();
     }
 }
