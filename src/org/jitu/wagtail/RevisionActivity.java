@@ -1,6 +1,5 @@
 package org.jitu.wagtail;
 
-import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,6 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class RevisionActivity extends ListActivity {
+    private final static int ACTIVITY_FILE_SAVER = 1;
+
     public static final String ARG_ID = "ARG_ID";
     public static final String ARG_FILE = "ARG_FILE";
 
@@ -42,14 +43,22 @@ public class RevisionActivity extends ListActivity {
         long fileId = getIntent().getLongExtra(ARG_ID, -1);
         String path = getIntent().getStringExtra(ARG_FILE);
         WagtailFile wf = WagtailFile.newToCheckOut(fileId, path, number);
-        showCheckOutDialog(wf);
+        openFileSaver(wf);
     }
 
-    private void showCheckOutDialog(WagtailFile wf) {
+    private void openFileSaver(WagtailFile wf) {
         checkOuted = wf;
-        String path = control.getCheckOutPath(wf);
-        DialogFragment newFragment = CheckOutFragment.newInstance(path);
-        newFragment.show(getFragmentManager(), "dialog");
+        Intent intent = new Intent(this, FileSaver.class);
+        String path = wf.getAbsolutePath();
+        intent.putExtra(FileSaver.ARG_PATH, path);
+        startActivityForResult(intent, ACTIVITY_FILE_SAVER);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode < 0) {
+            return;
+        }
     }
 
     public void checkOut(String path) {

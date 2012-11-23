@@ -1,18 +1,20 @@
 package org.jitu.wagtail;
 
 import java.io.File;
+
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.app.Activity;
-import android.content.Intent;
 
-public class FileChooser extends Activity implements OnItemClickListener {
-    public static final String ARG_ROOT = "ARG_ROOT";
-    public static final String RESULT_PATH = "path";
+public class FileSaver extends Activity implements OnItemClickListener {
+    public static final String ARG_PATH = "ARG_PATH";
+    public static final String RESULT_PATH = "RESULT_PATH";
 
     private File root;
     private File currentDir;
@@ -22,22 +24,33 @@ public class FileChooser extends Activity implements OnItemClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.file_chooser);
+        setContentView(R.layout.file_saver);
         setupList();
+        setFileEdit();
         setTitleDir();
     }
 
     private void setupList() {
-        Intent intent = getIntent();
-        String path = intent.getStringExtra(ARG_ROOT);
-        root = currentDir = new File(path);
+        root = currentDir = getArgFile().getParentFile();
         setupList(currentDir);
     }
 
+    private File getArgFile() {
+        String path = getIntent().getStringExtra(ARG_PATH);
+        return new File(path);
+    }
+
+    private void setFileEdit() {
+        EditText et = (EditText)findViewById(R.id.file_edit);
+        String filename = getArgFile().getName();
+        et.setText(filename);
+        et.setSelection(et.getText().length());
+    }
+
     private void setupList(File dir) {
-        ListView lv = (ListView)findViewById(R.id.file_chooser_list);
+        ListView lv = (ListView)findViewById(R.id.file_list);
         lv.setOnItemClickListener(this);
-        adapter = FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser_list, dir);
+        adapter = FileArrayAdapter.newInstance(FileSaver.this, R.layout.file_chooser_list, dir);
         lv.setAdapter(adapter);
     }
 
