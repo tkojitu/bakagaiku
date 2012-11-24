@@ -49,16 +49,23 @@ public class RevisionActivity extends ListActivity {
     private void openFileSaver(WagtailFile wf) {
         checkOuted = wf;
         Intent intent = new Intent(this, FileSaver.class);
-        String path = wf.getAbsolutePath();
+        String path = wf.getAbsolutePath() + "." + wf.getRevisionNumber();
         intent.putExtra(FileSaver.ARG_PATH, path);
         startActivityForResult(intent, ACTIVITY_FILE_SAVER);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode < 0) {
+        if (resultCode == -1) {
             return;
         }
+        if (resultCode == -2) {
+            cancel();
+            return;
+        }
+        String path = data.getStringExtra(FileSaver.RESULT_PATH);
+        checkOut(path);
+        backToParent(0);
     }
 
     public void checkOut(String path) {

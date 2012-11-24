@@ -5,14 +5,16 @@ import java.io.File;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class FileSaver extends Activity implements OnItemClickListener {
+public class FileSaver extends Activity implements OnItemClickListener, View.OnClickListener {
     public static final String ARG_PATH = "ARG_PATH";
     public static final String RESULT_PATH = "RESULT_PATH";
 
@@ -25,14 +27,20 @@ public class FileSaver extends Activity implements OnItemClickListener {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.file_saver);
-        setupList();
+        setupRoot();
+        setupList(currentDir);
         setFileEdit();
+        setupButtons();
         setTitleDir();
     }
 
-    private void setupList() {
-        root = currentDir = getArgFile().getParentFile();
-        setupList(currentDir);
+    private void setupRoot() {
+        File tmp = getArgFile().getParentFile();
+        if (tmp.exists() && tmp.isDirectory()) {
+            root = currentDir = tmp;
+        } else {
+            root = currentDir = Environment.getExternalStorageDirectory();
+        }
     }
 
     private File getArgFile() {
@@ -58,6 +66,21 @@ public class FileSaver extends Activity implements OnItemClickListener {
         setTitle(currentDir.getName());
     }
 
+    private void setupButtons() {
+        setupOkButton();
+        setupCancelButton();
+    }
+
+    private void setupOkButton() {
+        Button b = (Button)findViewById(R.id.ok);
+        b.setOnClickListener(this);
+    }
+
+    private void setupCancelButton() {
+        Button b = (Button)findViewById(R.id.cancel);
+        b.setOnClickListener(this);
+    }
+
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         File save = currentDir;
         try {
@@ -75,9 +98,8 @@ public class FileSaver extends Activity implements OnItemClickListener {
     }
 
     private void onFileClick(File file) {
-        backToParent(0, file.getAbsolutePath());
     }
-    
+
     private void backToParent(int resultCode, String path) {
         Intent intent = new Intent();
         intent.putExtra(RESULT_PATH, path);
@@ -89,10 +111,15 @@ public class FileSaver extends Activity implements OnItemClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case android.R.id.home:
-             return cancel();
+             return cancelToHome();
         default:
             return true;
         }
+    }
+
+    private boolean cancelToHome() {
+        backToParent(-2, "");
+        return true;
     }
 
     private boolean cancel() {
@@ -113,5 +140,24 @@ public class FileSaver extends Activity implements OnItemClickListener {
         currentDir = currentDir.getParentFile();
         setupList(currentDir);
         setTitleDir();
+    }
+
+    public void onClick(View v) {
+        if (v == findViewById(R.id.ok)) {
+            onOk();
+        } else {
+            cancel();
+        }
+    }
+
+    private void onOk() {
+        String path = getSavedPath();
+        backToParent(0, path);
+    }
+
+    private String getSavedPath() {
+        EditText et = (EditText)findViewById(R.id.file_edit);
+        String text = et.getText().toString();
+        return currentDir + File.separator + text;
     }
 }
