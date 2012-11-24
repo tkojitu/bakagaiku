@@ -11,37 +11,53 @@ import android.app.Activity;
 import android.content.Intent;
 
 public class FileChooser extends Activity implements OnItemClickListener {
-    public static final String ARG_ROOT = "ARG_ROOT";
+    public static final String ARG_PATH = "ARG_PATH";
     public static final String RESULT_PATH = "path";
 
-    private File root;
-    private File currentDir;
-    private FileArrayAdapter adapter;
+    protected File root;
+    protected File currentDir;
+    protected FileArrayAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.file_chooser);
-        setupList();
+        setupRoot();
         setTitleDir();
+        setupContentView();
+        setupList();
+    }
+
+    protected void setupRoot() {
+        root = currentDir = getArgFile();
+    }
+
+    protected void setupContentView() {
+        setContentView(R.layout.file_chooser);
+    }
+
+    protected File getArgFile() {
+        String path = getIntent().getStringExtra(ARG_PATH);
+        return new File(path);
     }
 
     private void setupList() {
-        Intent intent = getIntent();
-        String path = intent.getStringExtra(ARG_ROOT);
-        root = currentDir = new File(path);
-        setupList(currentDir);
-    }
-
-    private void setupList(File dir) {
-        ListView lv = (ListView)findViewById(R.id.file_chooser_list);
+        ListView lv = findFileList();
         lv.setOnItemClickListener(this);
-        adapter = FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser_list, dir);
+        adapter = newFileArrayAdapter();
         lv.setAdapter(adapter);
     }
 
-    private void setTitleDir() {
+    protected ListView findFileList() {
+        return (ListView)findViewById(R.id.file_chooser_list);
+    }
+
+    protected FileArrayAdapter newFileArrayAdapter() {
+        return FileArrayAdapter.newInstance(FileChooser.this, R.layout.file_chooser_list,
+                currentDir);
+    }
+
+    protected void setTitleDir() {
         setTitle(currentDir.getName());
     }
 
@@ -51,7 +67,7 @@ public class FileChooser extends Activity implements OnItemClickListener {
             File file = adapter.getFile(position);
             if (file.isDirectory()) {
                 currentDir = file.getAbsoluteFile();
-                setupList(currentDir);
+                setupList();
             } else {
                 onFileClick(file);
             }
@@ -61,11 +77,11 @@ public class FileChooser extends Activity implements OnItemClickListener {
         setTitleDir();
     }
 
-    private void onFileClick(File file) {
+    protected void onFileClick(File file) {
         backToParent(0, file.getAbsolutePath());
     }
-    
-    private void backToParent(int resultCode, String path) {
+
+    protected void backToParent(int resultCode, String path) {
         Intent intent = new Intent();
         intent.putExtra(RESULT_PATH, path);
         setResult(resultCode, intent);
@@ -82,7 +98,7 @@ public class FileChooser extends Activity implements OnItemClickListener {
         }
     }
 
-    private boolean cancel() {
+    protected boolean cancel() {
         backToParent(-1, "");
         return true;
     }
@@ -98,7 +114,7 @@ public class FileChooser extends Activity implements OnItemClickListener {
 
     private void moveUp() {
         currentDir = currentDir.getParentFile();
-        setupList(currentDir);
+        setupList();
         setTitleDir();
     }
 }

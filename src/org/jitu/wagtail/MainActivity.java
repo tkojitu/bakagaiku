@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
     private boolean openFileChooser() {
         Intent intent = new Intent(this, FileChooser.class);
         String root = Environment.getExternalStorageDirectory().getPath();
-        intent.putExtra(FileChooser.ARG_ROOT, root);
+        intent.putExtra(FileChooser.ARG_PATH, root);
         startActivityForResult(intent, ACTIVITY_FILE_CHOOSER);
         return true;
     }
