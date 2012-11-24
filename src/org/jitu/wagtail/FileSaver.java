@@ -5,15 +5,13 @@ import java.io.File;
 import android.os.Environment;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class FileSaver extends FileChooser implements View.OnClickListener {
+public class FileSaver extends FileChooser {
     protected void setupContentView() {
         setContentView(R.layout.file_saver);
         setFileEdit();
-        setupButtons();
     }
 
     protected void setupRoot() {
@@ -41,21 +39,6 @@ public class FileSaver extends FileChooser implements View.OnClickListener {
                 currentDir);
     }
 
-    private void setupButtons() {
-        setupOkButton();
-        setupCancelButton();
-    }
-
-    private void setupOkButton() {
-        Button b = (Button)findViewById(R.id.ok);
-        b.setOnClickListener(this);
-    }
-
-    private void setupCancelButton() {
-        Button b = (Button)findViewById(R.id.cancel);
-        b.setOnClickListener(this);
-    }
-
     protected void onFileClick(File file) {
     }
 
@@ -74,17 +57,13 @@ public class FileSaver extends FileChooser implements View.OnClickListener {
         return true;
     }
 
-    public void onClick(View v) {
-        if (v == findViewById(R.id.ok)) {
-            onOk();
-        } else {
-            cancel();
-        }
-    }
-
-    private void onOk() {
+    public void onOk(View view) {
         String path = getSavedPath();
         backToParent(0, path);
+    }
+
+    public void onCancel(View view) {
+        cancel();
     }
 
     private String getSavedPath() {
