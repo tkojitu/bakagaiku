@@ -50,10 +50,14 @@ public class LogInputActivity extends Activity {
         finish();
     }
 
-    public void onClick(View view) {
+    public void onOk(View view) {
         EditText edit = (EditText)findViewById(R.id.log);
         String str = edit.getText().toString();
         backToParent(0, str);
+    }
+
+    public void onCancel(View view) {
+        cancel();
     }
 
     @Override
